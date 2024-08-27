@@ -43,6 +43,7 @@
             this.serviceInstaller1.Description = "VTMonitoringTahion";
             this.serviceInstaller1.DisplayName = "VTMonitoringTahion";
             this.serviceInstaller1.ServiceName = "VTMonitoringTahion";
+            this.serviceInstaller1.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             // 
             // ProjectInstaller
             // 

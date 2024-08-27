@@ -1,7 +1,6 @@
-﻿
-
+﻿using System;
 using System.Timers;
-using System;
+using System.Collections;
 
 namespace VTMonitoringTahion
 {
@@ -9,6 +8,8 @@ namespace VTMonitoringTahion
     {
         public static void OnHostStatusTimer(Object source, ElapsedEventArgs e)
         {
+            ICollection viewCameraStatusKeys = Service.ViewCameraStatus.Keys;
+
             Service.StatusJson["UpTime"] = Request.GetUpTime().ToString();
             TimeSpan uptime = TimeSpan.FromSeconds(Convert.ToDouble(Service.StatusJson["UpTime"]));
             Logs.WriteLine($"Host uptime {uptime}.");
@@ -20,6 +21,21 @@ namespace VTMonitoringTahion
             Service.StatusJson["NetworkSent"] = network[2];
             Logs.WriteLine($"Interface speed {Service.StatusJson["NetworkNetspeed"]}, incoming load {Service.StatusJson["NetworkReceived"]}, outgoing load {Service.StatusJson["NetworkSent"]}.");
             //-------------------------------------------------------------------------------------------------
+
+            foreach (string ipViewCameraStatusKey in viewCameraStatusKeys)
+            {
+                Service.ViewCameraStatus.Add(ipViewCameraStatusKey, SQL.ViewCameraStatus((Service.ViewCamera[ipViewCameraStatusKey]).ToString()));
+
+                if (Service.ViewCamera[ipViewCameraStatusKey].ToString() == "1")
+                {
+                    Logs.WriteLine($"Recording from camera {ipViewCameraStatusKey} is available.");
+                }
+                else
+                {
+                    Logs.WriteLine($"Recording from camera {ipViewCameraStatusKey} is not available.");
+                }
+            }
+            Logs.WriteLine("-------------------------------------------------------------------------------");
         }
     }
 }

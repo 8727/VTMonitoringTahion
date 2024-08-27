@@ -2,7 +2,10 @@
 using System;
 using System.Collections;
 using System.Configuration;
+using System.IO;
 using System.ServiceProcess;
+using System.Text.RegularExpressions;
+using System.Xml;
 
 
 namespace VTMonitoringTahion
@@ -18,11 +21,14 @@ namespace VTMonitoringTahion
 
         public static Hashtable StatusJson = new Hashtable();
         public static Hashtable ViewCamera = new Hashtable();
+        public static Hashtable ViewCameraStatus = new Hashtable();
 
         public static int storageDays = 35;
         public static bool statusWeb = true;
-        public static string networkMonitoring = "vEthernet (LAN)";
+        public static string networkMonitoring = "Ethernet";
         public static int dataUpdateInterval = 5;
+
+        public static string diskMonitoring = "C:\\Program Files\\VOCORD\\VOCORD Tahion NetScaleIP";
 
         public static string sqlSource = @"(LOCAL)\SQLEXPRESS";
         public static string sqlUser = "sa";
@@ -37,6 +43,53 @@ namespace VTMonitoringTahion
                 if (key.GetValue("FailureActions") == null)
                 {
                     key.SetValue("FailureActions", new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x14, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x60, 0xea, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x60, 0xea, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x60, 0xea, 0x00, 0x00 });
+                }
+            }
+
+            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\VTNetScaleIPService"))
+            {
+                if (key != null)
+                {
+                    if (key.GetValue("ImagePath") != null)
+                    {
+                        string install = key.GetValue("ImagePath").ToString().Replace("\"", "");
+                        diskMonitoring = install.Remove(install.LastIndexOf("\\")) + "\\VTNetScaleIPService.exe.srv.config";
+                    }
+                }
+            }
+
+            if (File.Exists(diskMonitoring))
+            {
+                XmlDocument dataXmlFile = new XmlDocument();
+                dataXmlFile.Load(diskMonitoring);
+                XmlNodeList nodeList = dataXmlFile.SelectNodes($"//Camera");
+                if (nodeList != null)
+                {
+                    foreach (XmlNode node in nodeList)
+                    {
+                        var pattern = @"(?<key>\w+)=(?<value>.*?)(?=(\s\w+=|$))";
+                        var matches = Regex.Matches(node.OuterXml, pattern);
+
+                        string cam = null;
+                        string ip = null;
+
+                        foreach (Match match in matches)
+                        {
+                            if ((match.Groups["key"]).ToString() == "CamId")
+                            {
+                                cam = match.Groups["value"].ToString();
+                            }
+
+                            if ((match.Groups["key"]).ToString() == "Ip")
+                            {
+                                ip = match.Groups["value"].ToString();
+                            }
+                        }
+
+                        ViewCamera.Add(ip, SQL.ViewCameraSources("4950000000000000" + cam + "0000000000000001"));
+                        ViewCameraStatus.Add(ip, SQL.ViewCameraStatus((ViewCamera[ip]).ToString()));
+                        Logs.WriteLine($">>>>> Recording from overview camera {ip} added to status monitoring.");
+                    }
                 }
             }
 

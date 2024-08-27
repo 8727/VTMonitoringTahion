@@ -47,11 +47,11 @@ namespace VTMonitoringTahion
 
             json += ",\n\t\"viewCamera\":[\n\t";
             int c = 0;
-            foreach (DictionaryEntry ViewCameraKey in Service.ViewCamera)
+            foreach (DictionaryEntry ViewCameraStatusKey in Service.ViewCameraStatus)
             {
                 c++;
-                json += "\t{\n\t\t\"ip\":\"" + ViewCameraKey.Key + "\",\n\t\t\"status\":\"" + ViewCameraKey.Value + "\"\n\t\t}";
-                if (c < Service.ViewCamera.Count)
+                json += "\t{\n\t\t\"ip\":\"" + ViewCameraStatusKey.Key + "\",\n\t\t\"status\":\"" + ViewCameraStatusKey.Value + "\"\n\t\t}";
+                if (c < Service.ViewCameraStatus.Count)
                 {
                     json += ",";
                 }
