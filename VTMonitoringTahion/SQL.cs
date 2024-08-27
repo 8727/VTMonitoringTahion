@@ -5,7 +5,7 @@ namespace VTMonitoringTahion
 {
     internal class SQL
     {
-        static string connectionString = $@"Data Source={Service.sqlSource};Initial Catalog=AVTO;User Id={Service.sqlUser};Password={Service.sqlPassword};Connection Timeout=60";
+        static string connectionString = $@"Data Source={Service.sqlSource};Initial Catalog=VTEventLogApplication;User Id={Service.sqlUser};Password={Service.sqlPassword};Connection Timeout=60";
 
         static object SQLQuery(string query)
         {
@@ -36,7 +36,7 @@ namespace VTMonitoringTahion
         public static string ViewCameraSources(string ch)
         {
             string sqlQuery = $"SELECT ID FROM VTEventLogApplication.dbo.SOURCES WHERE SOURCE_ID = '{ch}'";
-            return SQLQuery(sqlQuery).ToString();
+            return SQLQuery(sqlQuery).ToString(); ;
         }
 
         public static string ViewCameraStatus(string id)

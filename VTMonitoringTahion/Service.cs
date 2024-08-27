@@ -77,12 +77,12 @@ namespace VTMonitoringTahion
                         {
                             if ((match.Groups["key"]).ToString() == "CamId")
                             {
-                                cam = match.Groups["value"].ToString();
+                                cam = match.Groups["value"].ToString().Replace("\"", "");
                             }
 
                             if ((match.Groups["key"]).ToString() == "Ip")
                             {
-                                ip = match.Groups["value"].ToString();
+                                ip = match.Groups["value"].ToString().Replace("\"", "");
                             }
                         }
 
@@ -103,6 +103,10 @@ namespace VTMonitoringTahion
                 sqlPassword = ConfigurationManager.AppSettings["SQLPassword"];
             }
 
+            var pingTimer = new System.Timers.Timer(5 * 60000);
+            pingTimer.Elapsed += Timer.OnViewCameraTimer;
+            pingTimer.AutoReset = true;
+            pingTimer.Enabled = true;
 
             var hostStatusTimer = new System.Timers.Timer(dataUpdateInterval * 60000);
             hostStatusTimer.Elapsed += Timer.OnHostStatusTimer;

@@ -6,6 +6,15 @@ namespace VTMonitoringTahion
 {
     internal class Timer
     {
+        public static void OnViewCameraTimer(Object source, ElapsedEventArgs e)
+        {
+            ICollection viewCameraStatusKeys = Service.ViewCameraStatus.Keys;
+            foreach (string ipViewCameraStatusKey in viewCameraStatusKeys)
+            {
+                Service.ViewCameraStatus[ipViewCameraStatusKey] = SQL.ViewCameraStatus((Service.ViewCamera[ipViewCameraStatusKey]).ToString());
+            }
+        }
+
         public static void OnHostStatusTimer(Object source, ElapsedEventArgs e)
         {
             ICollection viewCameraStatusKeys = Service.ViewCameraStatus.Keys;
@@ -24,9 +33,9 @@ namespace VTMonitoringTahion
 
             foreach (string ipViewCameraStatusKey in viewCameraStatusKeys)
             {
-                Service.ViewCameraStatus.Add(ipViewCameraStatusKey, SQL.ViewCameraStatus((Service.ViewCamera[ipViewCameraStatusKey]).ToString()));
+                //Service.ViewCameraStatus[ipViewCameraStatusKey] = SQL.ViewCameraStatus((Service.ViewCamera[ipViewCameraStatusKey]).ToString());
 
-                if (Service.ViewCamera[ipViewCameraStatusKey].ToString() == "1")
+                if (Service.ViewCameraStatus[ipViewCameraStatusKey].ToString() == "1")
                 {
                     Logs.WriteLine($"Recording from camera {ipViewCameraStatusKey} is available.");
                 }
