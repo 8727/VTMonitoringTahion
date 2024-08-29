@@ -46,6 +46,16 @@ namespace VTMonitoringTahion
                 }
             }
 
+            if (ConfigurationManager.AppSettings.Count != 0)
+            {
+                networkMonitoring = ConfigurationManager.AppSettings["NetworkMonitoring"];
+                dataUpdateInterval = Convert.ToInt32(ConfigurationManager.AppSettings["DataUpdateIntervalMinutes"]);
+
+                sqlSource = ConfigurationManager.AppSettings["SQLDataSource"];
+                sqlUser = ConfigurationManager.AppSettings["SQLUser"];
+                sqlPassword = ConfigurationManager.AppSettings["SQLPassword"];
+            }
+
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\VTNetScaleIPService"))
             {
                 if (key != null)
@@ -91,16 +101,6 @@ namespace VTMonitoringTahion
                         Logs.WriteLine($">>>>> Recording from overview camera {ip} added to status monitoring.");
                     }
                 }
-            }
-
-            if (ConfigurationManager.AppSettings.Count != 0)
-            {
-                networkMonitoring = ConfigurationManager.AppSettings["NetworkMonitoring"];
-                dataUpdateInterval = Convert.ToInt32(ConfigurationManager.AppSettings["DataUpdateIntervalMinutes"]);
-
-                sqlSource = ConfigurationManager.AppSettings["SQLDataSource"];
-                sqlUser = ConfigurationManager.AppSettings["SQLUser"];
-                sqlPassword = ConfigurationManager.AppSettings["SQLPassword"];
             }
 
             var pingTimer = new System.Timers.Timer(5 * 60000);

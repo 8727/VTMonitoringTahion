@@ -41,16 +41,15 @@ namespace VTMonitoringTahion
 
         public static string ViewCameraStatus(string id)
         {
-            string sqlQuery = $"SELECT TOP(1) EVENTTYPE_ID FROM VTEventLogApplication.dbo.EVENTS WHERE SOURCE_ID = {id} AND EVENTTYPE_ID = 175 OR SOURCE_ID = {id} AND EVENTTYPE_ID = 177 ORDER BY KEY_ID DESC";
-            string status = SQLQuery(sqlQuery).ToString();
-            string result = "-1";
-            if (status == "175")
+            string sqlQuery = $"SELECT TOP(1) EVENTTYPE_ID FROM VTEventLogApplication.dbo.EVENTS WHERE SOURCE_ID = {id} AND EVENTTYPE_ID = 175 OR SOURCE_ID = {id} AND EVENTTYPE_ID = 177 OR SOURCE_ID = {id} AND EVENTTYPE_ID = 66 OR SOURCE_ID = {id} AND EVENTTYPE_ID = 67 ORDER BY KEY_ID DESC";
+            string result = "0";
+            var otvet =  SQLQuery(sqlQuery);
+            if (otvet != null)
             {
-                result = "1";
-            }
-            if (status == "177")
-            {
-                result = "0";
+                if (otvet.ToString() == "175" || otvet.ToString() == "66")
+                {
+                    result = "1";
+                }
             }
             return result;
         }
