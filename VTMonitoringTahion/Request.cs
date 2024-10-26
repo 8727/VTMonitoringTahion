@@ -9,8 +9,15 @@ namespace VTMonitoringTahion
     {
         public static UInt32 GetUpTime()
         {
-            TimeSpan upTime = TimeSpan.FromMilliseconds(Environment.TickCount);
-            return Convert.ToUInt32(upTime.TotalSeconds);
+            try
+            {
+                TimeSpan upTime = TimeSpan.FromMilliseconds(Environment.TickCount);
+                return Convert.ToUInt32(upTime.TotalSeconds);
+            }
+            catch
+            {
+                return Convert.ToUInt32(Service.StatusJson["UpTime"]);
+            }
         }
 
         public static string[] GetNetwork()
