@@ -1,18 +1,19 @@
-﻿using Microsoft.Win32;
-using System;
+﻿using System;
+using System.IO;
+using System.Xml;
+using Microsoft.Win32;
 using System.Collections;
 using System.Configuration;
-using System.IO;
 using System.ServiceProcess;
 using System.Text.RegularExpressions;
-using System.Xml;
+
 
 
 namespace VTMonitoringTahion
 {
     public partial class Service : ServiceBase
     {
-        public static string version = "1.3";
+        public static string version = "1.5";
 
         public Service()
         {
@@ -128,7 +129,6 @@ namespace VTMonitoringTahion
             StatusJson.Add("NetworkReceived", network[1]);
             StatusJson.Add("NetworkSent", network[2]);
         }
-
 
         protected override void OnStart(string[] args)
         {
