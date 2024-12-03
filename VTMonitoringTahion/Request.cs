@@ -1,12 +1,25 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
+using System.ServiceProcess;
 using System.Net.NetworkInformation;
+
 
 namespace VTMonitoringTahion
 {
     internal class Request
     {
+        public static void StatusNTPService()
+        {
+            ServiceController service = new ServiceController("Network Time Protocol Daemon");
+            if (service.Status == ServiceControllerStatus.Stopped)
+            {
+                Console.WriteLine($">>>> Service {"Network Time Protocol Daemon"} status >>>> {service.Status} <<<<");
+                service.Start();
+                Console.WriteLine($">>>> Service {"Network Time Protocol Daemon"} status >>>> {service.Status} <<<<");
+            }
+        }
+
         public static UInt32 GetUpTime()
         {
             try
@@ -43,7 +56,7 @@ namespace VTMonitoringTahion
                 lastSent = ipv4Info.BytesSent;
                 speed = Convert.ToUInt16(adapter.Speed / 1000000);
             }
-            string[] req = { speed.ToString(), ((lastReceived - oldReceived) / 131072.0).ToString(), ((lastSent - oldSent) / 131072.0).ToString() };
+            string[] req = { speed.ToString(), ((lastReceived - oldReceived) / 131072.0).ToString().Replace(",", "."), ((lastSent - oldSent) / 131072.0).ToString().Replace(",", ".")};
             return req;
         }
     }

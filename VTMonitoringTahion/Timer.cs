@@ -44,6 +44,9 @@ namespace VTMonitoringTahion
                     Logs.WriteLine($"Recording from camera {ipViewCameraStatusKey} is not available.");
                 }
             }
+
+            Request.StatusNTPService();
+
             Logs.WriteLine("-------------------------------------------------------------------------------");
         }
     }
